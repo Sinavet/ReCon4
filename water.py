@@ -132,7 +132,7 @@ def process_watermark_mode(uploaded_files, preset_choice, user_wm_file, user_wm_
                         log_path = os.path.join(temp_dir, "log.txt")
                         with open(log_path, "w", encoding="utf-8") as logf:
                             logf.write("\n".join(log))
-                        zipf.write(log_path, arcname="log.txt")
+                        # Удаляю строки вида: zipf.write(log_path, arcname="log.txt")
                     with open(result_zip, "rb") as f:
                         st.session_state["result_zip"] = f.read()
                     st.session_state["stats"] = {"total": 0, "processed": 0, "errors": 0}
@@ -198,7 +198,7 @@ def process_watermark_mode(uploaded_files, preset_choice, user_wm_file, user_wm_
                                 log_path = os.path.join(temp_dir, "log.txt")
                                 with open(log_path, "w", encoding="utf-8") as logf:
                                     logf.write("\n".join(log))
-                                zipf.write(log_path, arcname="log.txt")
+                                # Удаляю строки вида: zipf.write(log_path, arcname="log.txt")
                             with open(result_zip, "rb") as f:
                                 st.session_state["result_zip"] = f.read()
                             st.session_state["stats"] = {"total": len(all_images), "processed": len(processed_files), "errors": errors}
@@ -211,7 +211,7 @@ def process_watermark_mode(uploaded_files, preset_choice, user_wm_file, user_wm_
                             log_path = os.path.join(temp_dir, "log.txt")
                             with open(log_path, "w", encoding="utf-8") as logf:
                                 logf.write("\n".join(log))
-                            zipf.write(log_path, arcname="log.txt")
+                            # Удаляю строки вида: zipf.write(log_path, arcname="log.txt")
                         with open(result_zip, "rb") as f:
                             st.session_state["result_zip"] = f.read()
                         st.session_state["stats"] = {"total": len(all_images), "processed": 0, "errors": errors}
