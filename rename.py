@@ -102,7 +102,8 @@ def process_rename_mode(uploaded_files):
                             arcname = file.relative_to(zip_root)
                             zipf.write(file, arcname=arcname)
                     st.write("[DEBUG] Архивация завершена, архив сохранён в session_state")
-                    st.session_state["result_zip"] = result_zip # Теперь только обработка и запись в session_state
+                    with open(result_zip, "rb") as f:
+                        st.session_state["result_zip"] = f.read()
                     st.session_state["stats"] = {
                         "total": len(all_images),
                         "renamed": renamed,
