@@ -5,6 +5,7 @@ import tempfile
 from pathlib import Path
 from PIL import Image
 import streamlit as st
+from utils import filter_large_files, SUPPORTED_EXTS
 
 def apply_watermark(
     base_image: Image.Image,
@@ -89,8 +90,6 @@ def apply_watermark(
     out = img.copy()
     out.alpha_composite(wm, dest=pos)
     return out.convert("RGB")
-
-SUPPORTED_EXTS = ('.jpg', '.jpeg', '.png', '.bmp', '.webp', '.tiff', '.heic', '.heif')
 
 def process_watermark_mode(uploaded_files, preset_choice, user_wm_file, user_wm_path, watermark_dir, pos_map, opacity, size_percent, position):
     uploaded_files = filter_large_files(uploaded_files)
@@ -216,18 +215,3 @@ def process_watermark_mode(uploaded_files, preset_choice, user_wm_file, user_wm_
                             st.session_state["result_zip"] = f.read()
                         st.session_state["stats"] = {"total": len(all_images), "processed": 0, "errors": errors}
                         st.session_state["log"] = log
-
-# Фильтр больших файлов (оставить для совместимости)
-def filter_large_files(uploaded_files):
-    MAX_SIZE_MB = 400
-    MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
-    filtered = []
-    for f in uploaded_files:
-        f.seek(0, 2)
-        size = f.tell()
-        f.seek(0)
-        if size > MAX_SIZE_BYTES:
-            st.error(f"Файл {f.name} превышает {MAX_SIZE_MB} МБ и не будет обработан.")
-        else:
-            filtered.append(f)
-    return filtered
