@@ -49,8 +49,7 @@ def process_convert_mode(uploaded_files):
                     with open(log_path, "w", encoding="utf-8") as logf:
                         logf.write("\n".join(log))
                     zipf.write(log_path, arcname="log.txt")
-                with open(result_zip, "rb") as f:
-                    st.session_state["result_zip"] = f.read()
+                st.session_state["result_zip"] = None # Удаляю вывод архива
                 st.session_state["stats"] = {"total": 0, "converted": 0, "errors": 0}
                 st.session_state["log"] = log
             else:
@@ -85,8 +84,7 @@ def process_convert_mode(uploaded_files):
                         with open(log_path, "w", encoding="utf-8") as logf:
                             logf.write("\n".join(log))
                         zipf.write(log_path, arcname="log.txt")
-                    with open(result_zip, "rb") as f:
-                        st.session_state["result_zip"] = f.read()
+                    st.session_state["result_zip"] = result_zip # Записываю архив в session_state
                     st.session_state["stats"] = {
                         "total": len(all_images),
                         "converted": len(converted_files),
@@ -103,27 +101,7 @@ def process_convert_mode(uploaded_files):
                         with open(log_path, "w", encoding="utf-8") as logf:
                             logf.write("\n".join(log))
                         zipf.write(log_path, arcname="log.txt")
-                    with open(result_zip, "rb") as f:
-                        st.session_state["result_zip"] = f.read()
+                    st.session_state["result_zip"] = result_zip # Записываю архив в session_state
                     st.session_state["stats"] = {"total": len(all_images), "converted": 0, "errors": errors}
                     st.session_state["log"] = log
                 st.write("[DEBUG] Архивация завершена, архив сохранён в session_state")
-
-    if st.session_state.get("result_zip"):
-        st.success("Архив успешно создан! Готов к скачиванию.")
-        st.download_button(
-            label="📥 Скачать архив",
-            data=st.session_state["result_zip"],
-            file_name="converted_images.zip",
-            mime="application/zip"
-        )
-        with st.expander("Показать лог обработки", expanded=False):
-            st.download_button(
-                label="📄 Скачать лог в .txt",
-                data="\n".join(st.session_state["log"]),
-                file_name="log.txt",
-                mime="text/plain"
-            )
-            st.text_area("Лог:", value="\n".join(st.session_state["log"]), height=300, disabled=True)
-    else:
-        st.error("Архив не создан")
