@@ -101,8 +101,6 @@ def process_rename_mode(uploaded_files):
                         for file in files_to_zip:
                             arcname = file.relative_to(zip_root)
                             zipf.write(file, arcname=arcname)
-                        if os.path.exists(log_path):
-                            zipf.write(log_path, arcname="log.txt")
                     st.write("[DEBUG] Архивация завершена, архив сохранён в session_state")
                     st.session_state["result_zip"] = result_zip # Теперь только обработка и запись в session_state
                     st.session_state["stats"] = {
