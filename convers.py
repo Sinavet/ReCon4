@@ -122,7 +122,7 @@ def process_convert_mode(uploaded_files):
             file_name="log.txt",
             mime="text/plain"
         )
-        with st.expander("Показать лог обработки"):
+        with st.expander("Показать лог обработки", expanded=False):
             st.text_area("Лог:", value="\n".join(st.session_state["log"]), height=300, disabled=True)
     else:
         st.write("Архив не создан")
