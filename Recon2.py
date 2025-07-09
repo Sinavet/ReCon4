@@ -8,6 +8,7 @@ try:
     import pillow_heif
     pillow_heif.register_heif_opener()
     HEIF_SUPPORT = True
+    st.write("[INFO] pillow-heif успешно загружен, поддержка HEIC/HEIF активна.")
 except ImportError:
     HEIF_SUPPORT = False
     st.warning("Для поддержки HEIC/HEIF установите пакет pillow-heif: pip install pillow-heif")
@@ -18,24 +19,33 @@ import uuid
 from rename import process_rename_mode
 from convers import process_convert_mode
 from water import process_watermark_mode
+from utils import filter_large_files, SUPPORTED_EXTS
 
 pillow_heif.register_heif_opener()
 
-SUPPORTED_EXTS = ('.jpg', '.jpeg', '.png', '.bmp', '.webp', '.tiff', '.heic', '.heif')
+st.set_page_config(page_title="PhotoFlow: Умная обработка изображений", page_icon="📸")
+st.markdown("""
+<style>
+    .stApp {background-color: #f7f7fa;}
+    .big-title {font-size:2.2em; font-weight:700; color:#2d3a4a; margin-bottom:0.2em;}
+    .subtitle {font-size:1.2em; color:#4a5568; margin-bottom:1em;}
+    .stButton>button {font-size:1.1em;}
+    .stDownloadButton>button {font-size:1.1em;}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("<div class='big-title'>PhotoFlow: Умная обработка изображений</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>Быстрое и простое преобразование, переименование и защита ваших фото</div>", unsafe_allow_html=True)
 
-st.set_page_config(page_title="PhotoFlow: Умная обработка изображений")
-st.title("PhotoFlow: Умная обработка изображений")
-
-with st.expander("ℹ️ Инструкция и ответы на вопросы"):
+with st.expander("ℹ️ Инструкция и ответы на вопросы", expanded=True):
     st.markdown("""
-    **Как пользоваться ботом:**
+    **Как пользоваться:**
     1. Выберите режим работы.
     2. Загрузите изображения или архив.
     3. Дождитесь обработки и скачайте результат.
 
     **FAQ:**
     - *Почему не все фото обработались?*  
-      Возможно, некоторые файлы были повреждены или не поддерживаются.
+      Некоторые файлы могут быть повреждены или не поддерживаются.
     - *Что делать, если архив не скачивается?*  
       Попробуйте уменьшить размер архива или разделить файлы на несколько частей.
     """)
@@ -80,24 +90,6 @@ uploaded_files = st.file_uploader(
     accept_multiple_files=True,
     key=st.session_state["reset_uploader"]
 )
-
-MAX_SIZE_MB = 400
-MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
-
-def is_file_too_large(uploaded_file):
-    uploaded_file.seek(0, 2)  # Переместить в конец файла
-    size = uploaded_file.tell()
-    uploaded_file.seek(0)
-    return size > MAX_SIZE_BYTES
-
-def filter_large_files(uploaded_files):
-    filtered = []
-    for f in uploaded_files:
-        if is_file_too_large(f):
-            st.error(f"Файл {f.name} превышает {MAX_SIZE_MB} МБ и не будет обработан.")
-        else:
-            filtered.append(f)
-    return filtered
 
 # --- UI для режима Водяной знак ---
 if mode == "Водяной знак":
@@ -189,6 +181,7 @@ elif mode == "Водяной знак":
 
 # Универсальный блок скачивания архива и лога для всех режимов
 if st.session_state.get("result_zip"):
+    st.success("✅ Архив успешно создан! Готов к скачиванию.")
     st.download_button(
         label="📥 Скачать архив",
         data=st.session_state["result_zip"],
@@ -197,19 +190,20 @@ if st.session_state.get("result_zip"):
             else "converted_photos.zip" if mode == "Конвертация в JPG"
             else "watermarked_images.zip"
         ),
-        mime="application/zip"
+        mime="application/zip",
+        type="primary"
     )
-    st.download_button(
-        label="📄 Скачать лог в .txt",
-        data="\n".join(st.session_state["log"]),
-        file_name="log.txt",
-        mime="text/plain"
-    )
-    if mode == "Переименование фото":
-        with st.expander("Показать лог обработки"):
-            st.text_area("Лог:", value="\n".join(st.session_state["log"]), height=300, disabled=True)
+    # Скрываем логи по умолчанию, только для поддержки
+    with st.expander("🛠️ Для поддержки/разработчика (логи и детали)", expanded=False):
+        st.download_button(
+            label="📄 Скачать лог в .txt",
+            data="\n".join(st.session_state["log"]),
+            file_name="log.txt",
+            mime="text/plain"
+        )
+        st.text_area("Лог:", value="\n".join(st.session_state["log"]), height=300, disabled=True)
 else:
-    st.write("Архив не создан")
+    st.error("❌ Архив не создан. Проверьте формат файлов или попробуйте снова.")
 
 if st.button("🔄 Начать сначала", type="primary"):
     reset_all()
