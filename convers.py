@@ -84,7 +84,8 @@ def process_convert_mode(uploaded_files):
                         with open(log_path, "w", encoding="utf-8") as logf:
                             logf.write("\n".join(log))
                         zipf.write(log_path, arcname="log.txt")
-                    st.session_state["result_zip"] = result_zip # Записываю архив в session_state
+                    with open(result_zip, "rb") as f:
+                        st.session_state["result_zip"] = f.read()
                     st.session_state["stats"] = {
                         "total": len(all_images),
                         "converted": len(converted_files),
