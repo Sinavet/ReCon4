@@ -79,11 +79,7 @@ def process_convert_mode(uploaded_files):
                     with zipfile.ZipFile(result_zip, "w") as zipf:
                         for src, rel in converted_files:
                             zipf.write(src, arcname=rel)
-                        # Добавляем лог всегда
-                        log_path = os.path.join(temp_dir, "log.txt")
-                        with open(log_path, "w", encoding="utf-8") as logf:
-                            logf.write("\n".join(log))
-                        zipf.write(log_path, arcname="log.txt")
+                        # log.txt больше не добавляем в архив
                     with open(result_zip, "rb") as f:
                         st.session_state["result_zip"] = f.read()
                     st.session_state["stats"] = {
