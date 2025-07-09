@@ -223,17 +223,27 @@ elif mode == "Водяной знак":
 # Универсальный блок скачивания архива и лога для всех режимов
 if st.session_state.get("result_zip"):
     st.success("✅ Архив успешно создан! Готов к скачиванию.")
-    st.download_button(
-        label="📥 Скачать архив",
-        data=open(st.session_state["result_zip"], "rb").read() if isinstance(st.session_state["result_zip"], str) else st.session_state["result_zip"],
-        file_name=(
-            "renamed_photos.zip" if mode == "Переименование фото"
-            else "converted_photos.zip" if mode == "Конвертация в JPG"
-            else "watermarked_images.zip"
-        ),
-        mime="application/zip",
-        type="primary"
-    )
+    result_zip = st.session_state["result_zip"]
+    archive_data = None
+    if isinstance(result_zip, bytes):
+        archive_data = result_zip
+    elif isinstance(result_zip, str) and os.path.exists(result_zip):
+        with open(result_zip, "rb") as f:
+            archive_data = f.read()
+    else:
+        archive_data = None
+    if archive_data:
+        st.download_button(
+            label="📥 Скачать архив",
+            data=archive_data,
+            file_name=(
+                "renamed_photos.zip" if mode == "Переименование фото"
+                else "converted_photos.zip" if mode == "Конвертация в JPG"
+                else "watermarked_images.zip"
+            ),
+            mime="application/zip",
+            type="primary"
+        )
     with st.expander("Показать лог обработки", expanded=False):
         st.download_button(
             label="📄 Скачать лог в .txt",
@@ -258,14 +268,4 @@ if st.button("🔄 Начать сначала", type="primary"):
 # --- Функция для загрузки на TransferNow ---
 def upload_to_transfernow(file_path):
     url = "https://api.transfernow.net/v2/transfers"
-    with open(file_path, 'rb') as f:
-        files = {'files': (os.path.basename(file_path), f)}
-        data = {
-            'message': 'Ваш файл готов!',
-            'email_from': 'noreply@photoflow.local'
-        }
-        response = requests.post(url, files=files, data=data)
-    if response.status_code == 201:
-        return response.json().get('download_url')
-    else:
-        return None
+    with open(file_
