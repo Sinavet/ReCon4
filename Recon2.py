@@ -26,11 +26,52 @@ pillow_heif.register_heif_opener()
 st.set_page_config(page_title="PhotoFlow: Умная обработка изображений", page_icon="📸")
 st.markdown("""
 <style>
-    .stApp {background-color: #f7f7fa;}
-    .big-title {font-size:2.2em; font-weight:700; color:#2d3a4a; margin-bottom:0.2em;}
-    .subtitle {font-size:1.2em; color:#4a5568; margin-bottom:1em;}
-    .stButton>button {font-size:1.1em;}
-    .stDownloadButton>button {font-size:1.1em;}
+    body, .stApp {
+        background-color: #181c24 !important;
+        color: #f3f6fa !important;
+    }
+    .big-title {
+        font-size:2.2em; font-weight:700; color:#f3f6fa; margin-bottom:0.2em;
+        text-shadow: 0 2px 8px #00000044;
+    }
+    .subtitle {
+        font-size:1.2em; color:#b0b8c9; margin-bottom:1em;
+    }
+    .stButton>button, .stDownloadButton>button {
+        font-size:1.1em;
+        background: linear-gradient(90deg, #2d3748 0%, #4a5568 100%);
+        color: #f3f6fa;
+        border: none;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px #00000022;
+        transition: background 0.2s;
+    }
+    .stButton>button:hover, .stDownloadButton>button:hover {
+        background: linear-gradient(90deg, #4a5568 0%, #2d3748 100%);
+        color: #fff;
+    }
+    .stTextInput>div>input, .stFileUploader>div>input {
+        background: #232837;
+        color: #f3f6fa;
+        border-radius: 6px;
+        border: 1px solid #2d3748;
+    }
+    .stExpander, .stExpanderHeader {
+        background: #232837 !important;
+        color: #f3f6fa !important;
+        border-radius: 8px !important;
+    }
+    .stAlert, .stSuccess, .stError, .stInfo {
+        border-radius: 8px !important;
+    }
+    .stRadio > div {color: #f3f6fa;}
+    .stProgress > div > div {background: #4a90e2 !important;}
+    .stTextArea textarea {
+        background: #232837;
+        color: #f3f6fa;
+        border-radius: 6px;
+        border: 1px solid #2d3748;
+    }
 </style>
 """, unsafe_allow_html=True)
 st.markdown("<div class='big-title'>PhotoFlow: Умная обработка изображений</div>", unsafe_allow_html=True)
