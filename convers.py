@@ -5,8 +5,8 @@ import tempfile
 from pathlib import Path
 from PIL import Image
 import streamlit as st
+from utils import filter_large_files, SUPPORTED_EXTS
 
-SUPPORTED_EXTS = ('.jpg', '.jpeg', '.png', '.bmp', '.webp', '.tiff', '.heic', '.heif')
 
 def process_convert_mode(uploaded_files):
     uploaded_files = filter_large_files(uploaded_files)
@@ -126,19 +126,3 @@ def process_convert_mode(uploaded_files):
             st.text_area("Лог:", value="\n".join(st.session_state["log"]), height=300, disabled=True)
     else:
         st.write("Архив не создан")
-
-
-# Фильтр больших файлов (оставить для совместимости)
-def filter_large_files(uploaded_files):
-    MAX_SIZE_MB = 400
-    MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
-    filtered = []
-    for f in uploaded_files:
-        f.seek(0, 2)
-        size = f.tell()
-        f.seek(0)
-        if size > MAX_SIZE_BYTES:
-            st.error(f"Файл {f.name} превышает {MAX_SIZE_MB} МБ и не будет обработан.")
-        else:
-            filtered.append(f)
-    return filtered
