@@ -225,7 +225,7 @@ if st.session_state.get("result_zip"):
     st.success("✅ Архив успешно создан! Готов к скачиванию.")
     st.download_button(
         label="📥 Скачать архив",
-        data=st.session_state["result_zip"],
+        data=open(st.session_state["result_zip"], "rb").read() if isinstance(st.session_state["result_zip"], str) else st.session_state["result_zip"],
         file_name=(
             "renamed_photos.zip" if mode == "Переименование фото"
             else "converted_photos.zip" if mode == "Конвертация в JPG"
@@ -234,8 +234,7 @@ if st.session_state.get("result_zip"):
         mime="application/zip",
         type="primary"
     )
-    # Скрываем логи по умолчанию, только для поддержки
-    with st.expander("🛠️ Для поддержки/разработчика (логи и детали)", expanded=False):
+    with st.expander("Показать лог обработки", expanded=False):
         st.download_button(
             label="📄 Скачать лог в .txt",
             data="\n".join(st.session_state["log"]),
