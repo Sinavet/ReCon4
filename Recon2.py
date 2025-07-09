@@ -268,4 +268,14 @@ if st.button("🔄 Начать сначала", type="primary"):
 # --- Функция для загрузки на TransferNow ---
 def upload_to_transfernow(file_path):
     url = "https://api.transfernow.net/v2/transfers"
-    with open(file_
+    with open(file_path, 'rb') as f:
+        files = {'files': (os.path.basename(file_path), f)}
+        data = {
+            'message': 'Ваш файл готов!',
+            'email_from': 'noreply@photoflow.local'
+        }
+        response = requests.post(url, files=files, data=data)
+    if response.status_code == 201:
+        return response.json().get('download_url')
+    else:
+        return None
