@@ -6,6 +6,7 @@ from pathlib import Path
 from PIL import Image
 import streamlit as st
 from utils import filter_large_files, SUPPORTED_EXTS
+from io import BytesIO
 
 def apply_watermark(
     base_image: Image.Image,
